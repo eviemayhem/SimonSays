@@ -7,9 +7,9 @@ var started = false;
 var level = 0
 
 // This initiates the gamePattern.
-$(document).keypress(function() {
+$(document).keydown(function() {
     if (!started) {
-    $("h1").text("Level " + level);
+    $("#level-title").text("Level " + level);
     nextSequence();
     started = true;
     }
@@ -25,9 +25,7 @@ $(".btn").click(function() {
     playSound(userChosenColor);
     
     animatePress(userChosenColor);
-    setTimeout(function() {
-        checkAnswer(userClickedPattern.length-1);
-    }, 1000);
+    checkAnswer(userClickedPattern.length-1);
     
 })
 
@@ -37,8 +35,8 @@ $(".btn").click(function() {
 function nextSequence() {
     userClickedPattern = [];
    
-    level++;
-    $("h1").text("Level " + level);
+    
+    $("#level-title").text("Level " + ++level);
 
      var randomNumber = Math.floor(Math.random()* 4);
      var randomChosenColor = buttonColors[randomNumber];
@@ -55,19 +53,29 @@ function checkAnswer(currentLevel){
 if (gamePattern[currentLevel] === userClickedPattern[currentLevel]){
     console.log ("Success");
 
+    if (userClickedPattern.length === gamePattern.length){
+
+    
     setTimeout(function() {
         nextSequence();
     }, 1000);
-    
+}
 
     
 }
 else {
     console.log ("wrong");
-    $("h1").text("GAME OVER.");
-    gameOver();
+    $("body").addClass('game-over');
+    $("h1").text("GAME OVER. Press Any Key to Restart.");
+    
+    setTimeout(function () {
+        $('body').removeClass('game-over');
+      },200);
+      
+    startOver();
 }
 }
+
 
 // This controls the audio played on button activation and game completion.
 function playSound(name){
@@ -75,10 +83,20 @@ function playSound(name){
 audio.play();
 
 }
-
+//  Ends Game
 function gameOver(name){
     var audio = new Audio("sounds/wrong.mp3");
     audio.play();
+
+}
+
+// starts game over
+function startOver(){
+            level = 0;
+            gamePattern = [];
+             started = false;
+        
+    
 }
 
 // This controls button Animation.
